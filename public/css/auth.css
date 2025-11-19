@@ -1,0 +1,81 @@
+/* Modernized styles for login and register pages */
+:root{
+    --bg:#f6f9ff;
+    --card:#ffffff;
+    --accent:#2563eb;
+    --accent-600:#1e40af;
+    --muted:#6b7280;
+    --glass: rgba(255,255,255,0.6);
+}
+html,body{height:100%;}
+body{
+    margin:0;
+    font-family: Inter, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: radial-gradient(1200px 600px at 10% 10%, #eef2ff 0%, transparent 15%),
+                linear-gradient(180deg,var(--bg),#eef6ff 60%);
+    color:#0f172a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+}
+.auth-container{
+    width:100%;
+    max-width:480px;
+    padding:36px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,255,0.85));
+    backdrop-filter: blur(6px);
+    box-shadow:0 10px 30px rgba(2,6,23,0.12);
+    border-radius:14px;
+    border: 1px solid rgba(15,23,42,0.04);
+}
+.auth-container h1{margin:0 0 18px; font-size:24px; color:#0b1220}
+.auth-sub{margin:0 0 18px; color:var(--muted); font-size:14px}
+.auth-field{margin-bottom:14px}
+.auth-field label{display:block; font-size:13px; color:var(--muted); margin-bottom:8px}
+.auth-field input[type="text"],
+.auth-field input[type="email"],
+.auth-field input[type="password"]{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid rgba(15,23,42,0.06);
+    border-radius:10px;
+    font-size:15px;
+    box-sizing:border-box;
+    transition:box-shadow .15s ease, border-color .12s ease, transform .06s ease;
+}
+.auth-field input:focus{
+    outline:none;
+    border-color:var(--accent-600);
+    box-shadow:0 6px 20px rgba(37,99,235,0.12);
+    transform:translateY(-1px);
+}
+.auth-actions{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:20px}
+.btn{
+    background:var(--accent);
+    color:white;
+    border:0;
+    padding:10px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    box-shadow:0 6px 18px rgba(37,99,235,0.12);
+    transition:transform .08s ease, box-shadow .12s ease, background .12s ease;
+}
+.btn:hover{background:var(--accent-600); transform:translateY(-2px); box-shadow:0 12px 30px rgba(37,99,235,0.14)}
+.btn:active{transform:translateY(0)}
+.link-muted{color:var(--muted); font-size:14px}
+.errors{background:#fff5f5; border:1px solid #fecaca; color:#86181d; padding:10px; border-radius:8px; margin-bottom:12px}
+.small{font-size:13px; color:var(--muted)}
+
+/* Header tweaks (layout component uses inline header/nav) */
+header{background:transparent}
+header a{color:var(--muted); text-decoration:none}
+header a:hover{color:var(--accent-600)}
+
+@media (max-width:640px){
+    .auth-container{margin:18px; padding:22px}
+    .auth-container h1{font-size:20px}
+}
+
