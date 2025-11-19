@@ -1,3 +1,118 @@
+/* Styles for auth and welcome page */
+.auth-container {
+    max-width: 520px;
+    margin: 3.25rem auto;
+    padding: 1.5rem;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    color: #e6eef8;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(2,6,23,0.45);
+}
+.auth-container h1 { font-size: 1.5rem; margin-bottom: 0.75rem; color: #eaf4ff; }
+.auth-field { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.9rem; text-align: left; }
+.auth-field label { font-size: 0.88rem; color: #9fb3d6; }
+.auth-field input[type="text"],
+.auth-field input[type="email"],
+.auth-field input[type="password"],
+.auth-field select,
+.auth-field input[type="tel"] {
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    color: #e6eef8;
+    outline: none;
+    transition: box-shadow .12s ease, transform .08s ease, border-color .12s ease;
+}
+.auth-field input::placeholder { color: rgba(230,238,248,0.32); }
+.auth-field input:focus,
+.auth-field select:focus {
+    box-shadow: 0 8px 20px rgba(59,130,246,0.08);
+    border-color: rgba(59,130,246,0.5);
+    transform: translateY(-1px);
+}
+
+/* Custom select styling with arrow */
+.auth-field select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 20 20'%3E%3Cpath fill='%239fb3d6' d='M7 8l3 3 3-3z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+    padding-right: 40px;
+}
+
+/* Ensure select text is visible across themes and browsers */
+.auth-field select,
+.auth-field select option {
+    color: #0b1220; /* dark text for readability */
+}
+.auth-field select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid rgba(15,23,42,0.06);
+    border-radius: 10px;
+    background: #ffffff;
+    box-sizing: border-box;
+    font-size: 15px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+.auth-field select:focus {
+    outline: none;
+    border-color: var(--accent-600);
+    box-shadow: 0 6px 20px rgba(37,99,235,0.12);
+    transform: translateY(-1px);
+}
+
+.auth-actions { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-top:0.5rem; }
+.auth-actions .btn { padding: 0.6rem 1rem; border-radius: 8px; }
+
+.welcome-container {
+    max-width: 820px;
+    margin: 4rem auto;
+    text-align: center;
+    padding: 2.25rem;
+    background: linear-gradient(135deg, #07122a 0%, #07112a 40%, #081426 100%);
+    color: #e6eef8;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+}
+.welcome-container h1 { font-size: 2.25rem; margin-bottom: 0.25rem; }
+.subtitle { color: #9fb3d6; margin-bottom: 1.5rem; font-size: 1.05rem; }
+.buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 100%);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(59,130,246,0.18);
+}
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(59,130,246,0.22); }
+
+.btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(230,238,248,0.12);
+    color: #e6eef8;
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.03); transform: translateY(-3px); }
+
+@media (max-width: 480px) {
+    .welcome-container { margin: 2rem 1rem; padding: 1.25rem; }
+    .welcome-container h1 { font-size: 1.5rem; }
+    .buttons { flex-direction: column; gap: 0.75rem; }
+}
 /* Modernized styles for login and register pages */
 :root{
     --bg:#f6f9ff;
@@ -78,4 +193,27 @@ header a:hover{color:var(--accent-600)}
     .auth-container{margin:18px; padding:22px}
     .auth-container h1{font-size:20px}
 }
+
+/* Force readable text and backgrounds for all form controls */
+.auth-container .auth-field input,
+.auth-container .auth-field select,
+.auth-container .auth-field textarea,
+.auth-field input,
+.auth-field select,
+.auth-field textarea {
+    color: #0b1220 !important; /* dark text for readability */
+    background: #ffffff !important; /* white background to contrast */
+    border-color: rgba(15,23,42,0.06) !important;
+}
+.auth-container .auth-field input::placeholder,
+.auth-container .auth-field textarea::placeholder,
+.auth-field input::placeholder,
+.auth-field textarea::placeholder {
+    color: rgba(11,18,32,0.45) !important;
+}
+.auth-field select option {
+    color: #0b1220 !important;
+    background: #ffffff !important;
+}
+
 

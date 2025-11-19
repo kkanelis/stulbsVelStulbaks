@@ -22,19 +22,29 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
+            'role' => 'nullable|in:student,teacher',
+            'admin_code' => 'nullable|string'
         ]);
 
-        // Create user (password will be hashed by the model cast, but hash here for compatibility)
+        // Determine role. default to student if not provided.
+        $role = $data['role'] ?? 'student';
+
+        // Allow creating an admin only when a correct admin code is provided.
+        if (!empty($data['admin_code']) && $data['admin_code'] === env('ADMIN_REG_CODE')) {
+            $role = 'admin';
+        }
+
+        // Create user
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'role' => 'user',
+            'role' => $role,
         ]);
 
         Auth::login($user);
 
-        return redirect()->intended('/');
+        return $this->redirectToRole($user);
     }
 
     // Show login form
@@ -53,12 +63,29 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember')) ) {
             $request->session()->regenerate();
-            return redirect()->intended('/');
+            $user = Auth::user();
+            return $this->redirectToRole($user);
         }
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
+    }
+
+    /**
+     * Redirect user based on role
+     */
+    private function redirectToRole(User $user)
+    {
+        if ($user->isAdmin()) {
+            return redirect()->intended('/admin');
+        }
+
+        if ($user->isTeacher()) {
+            return redirect()->intended('/teacher');
+        }
+
+        return redirect()->intended('/student');
     }
 
     // Logout
