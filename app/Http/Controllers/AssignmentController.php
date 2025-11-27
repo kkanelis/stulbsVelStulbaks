@@ -55,23 +55,39 @@ class AssignmentController extends Controller
         }
 
         $request->validate([
-            'file' => 'required|file|max:10240', // max 10MB
+            'file' => 'nullable|file|max:10240', // max 10MB, now optional
             'note' => 'nullable|string|max:1000',
         ]);
 
         $file = $request->file('file');
-        $path = $file->storeAs('assignments', Str::random(12) . '_' . $file->getClientOriginalName(), 'public');
+        $path = null;
+        $originalName = null;
+        $mime = null;
+        $size = null;
 
-        AssignmentFile::create([
-            'assignment_id' => $assignment->id,
-            'user_id' => $user->id,
-            'path' => $path,
-            'original_name' => $file->getClientOriginalName(),
-            'mime' => $file->getClientMimeType(),
-            'size' => $file->getSize(),
-        ]);
+        if ($file) {
+            $path = $file->storeAs('assignments', Str::random(12) . '_' . $file->getClientOriginalName(), 'public');
+            $originalName = $file->getClientOriginalName();
+            $mime = $file->getClientMimeType();
+            $size = $file->getSize();
+        }
 
-        return back()->with('success', 'File uploaded successfully.');
+        // Only create if there's either a file or a note
+        if ($file || $request->filled('note')) {
+            AssignmentFile::create([
+                'assignment_id' => $assignment->id,
+                'user_id' => $user->id,
+                'path' => $path,
+                'original_name' => $originalName,
+                'mime' => $mime,
+                'size' => $size,
+                'note' => $request->input('note'),
+            ]);
+        } else {
+            return back()->with('error', 'Please upload a file or write a note.');
+        }
+
+        return back()->with('success', 'Submission saved successfully.');
     }
 
     // Download a file

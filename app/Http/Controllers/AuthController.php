@@ -23,23 +23,16 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
             'role' => 'nullable|in:student,teacher',
-            'admin_code' => 'nullable|string'
         ]);
 
-        // Determine role. default to student if not provided.
         $role = $data['role'] ?? 'student';
-
-        // Allow creating an admin only when a correct admin code is provided.
-        if (!empty($data['admin_code']) && $data['admin_code'] === env('ADMIN_REG_CODE')) {
-            $role = 'admin';
-        }
 
         // Create user
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'role' => $role,
+            'role' => 'student',
         ]);
 
         Auth::login($user);

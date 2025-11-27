@@ -1,70 +1,80 @@
 <x-layout title="Teacher Dashboard">
-    <div class="dashboard-wrapper teacher-dashboard">
+    <div style="min-height: 100vh; background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f7 100%);">
         <!-- Header -->
-        <div class="dashboard-header">
-            <div class="header-left">
-                <h1>Teacher Dashboard</h1>
-                <p class="header-subtitle">Welcome, <strong>{{ auth()->user()->name }}</strong></p>
-            </div>
-            <div class="header-right">
-                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="btn btn-danger">Logout</a>
+        <div style="background: linear-gradient(135deg, #0F4C75 0%, #3282B8 100%); color: white; padding: 2.5rem 2rem; position: relative; overflow: hidden;">
+            <div style="position: absolute; width: 300px; height: 300px; background: rgba(187, 225, 250, 0.1); border-radius: 50%; top: -150px; right: -150px;"></div>
+            <div style="max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 style="margin: 0 0 0.5rem 0; font-size: 2.5rem; font-weight: 800;">🎓 Skolotāja Panelis</h1>
+                    <p style="margin: 0; color: #BBE1FA; font-size: 1rem;">Sveiki, <strong>{{ auth()->user()->name }}</strong></p>
+                </div>
+                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="background: #BBE1FA; color: #0F4C75; padding: 0.75rem 1.5rem; border-radius: 10px; text-decoration: none; font-weight: 700; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 16px rgba(187, 225, 250, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">🚪 Iziet</a>
                 <form id="logout-form" method="POST" action="{{ route('logout') }}" style="display:none;">@csrf</form>
             </div>
         </div>
 
-        <!-- Subject Setup Section -->
-        @if (!$subject)
-            <div class="alert alert-warning">
-                <h3>📚 Set Your Subject</h3>
-                <p>Please configure your subject before creating assignments.</p>
-                <form method="POST" action="{{ route('teacher.setSubject') }}" class="subject-form">
-                    @csrf
-                    <input type="text" name="subject_name" placeholder="e.g., Mathematics, English, Science" required class="form-input">
-                    <button type="submit" class="btn btn-primary">Set Subject</button>
-                </form>
-            </div>
-        @else
-            <div class="subject-card">
-                    <div class="subject-info">
-                        <h3>📚 Your Subject</h3>
-                        <p class="subject-name">{{ $subject->name }}</p>
-                        <p class="subject-code">Course code: <strong style="letter-spacing:2px;">{{ $subject->code }}</strong></p>
-                        <div style="display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem;">
-                            <button class="btn btn-small" onclick="toggleSubjectEdit()">Change Subject</button>
+        <div style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+            <!-- Subject Setup Section -->
+            <!-- Subject Setup Section -->
+            @if (!$subject)
+                <div style="background: linear-gradient(135deg, #ffd699 0%, #ffcc80 100%); border-left: 4px solid #f59e0b; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
+                    <h3 style="color: #8B5E00; margin: 0 0 1rem 0; font-weight: 800;">📚 Iestatīt Jūsu Kursu</h3>
+                    <p style="color: #7D6608; margin: 0 0 1.5rem 0;">Lūdzu konfigurējiet savu kursu pirms uzdevumu izveidošanas.</p>
+                    <form method="POST" action="{{ route('teacher.setSubject') }}" style="display: flex; gap: 1rem; align-items: flex-end;">
+                        @csrf
+                        <div style="flex: 1;">
+                            <input type="text" name="subject_name" placeholder="Piem.: Matemātika, Angļu valoda, Zinātne" required style="width: 100%; padding: 0.9rem 1rem; border: 2px solid #F59E0B; border-radius: 10px; color: #1B262C; font-size: 1rem;">
+                        </div>
+                        <button type="submit" style="background: #0F4C75; color: white; padding: 0.9rem 2rem; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; transition: all 0.3s ease;">➕ Iestatīt</button>
+                    </form>
+                </div>
+            @else
+                <div style="background: linear-gradient(135deg, #0F4C75 0%, #3282B8 100%); color: white; padding: 2rem; border-radius: 16px; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(15, 76, 117, 0.2);">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <h3 style="color: #BBE1FA; margin: 0 0 0.5rem 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">📚 Jūsu Kurss</h3>
+                            <p style="margin: 0 0 0.5rem 0; font-size: 2rem; font-weight: 800;">{{ $subject->name }}</p>
+                            <p style="margin: 0; color: #BBE1FA; font-family: monospace; font-size: 1.1rem; letter-spacing: 2px;">{{ $subject->code }}</p>
+                        </div>
+                        <div style="display: flex; gap: 0.75rem; flex-direction: column; align-items: flex-end;">
+                            <button onclick="toggleSubjectEdit()" style="background: rgba(255, 255, 255, 0.2); color: white; padding: 0.6rem 1.2rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.3); font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255, 255, 255, 0.3)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)';">✏️ Mainīt</button>
                             <form method="POST" action="{{ route('teacher.regenerateCode') }}" style="display:inline;">
                                 @csrf
-                                <button type="submit" class="btn btn-small">Regenerate Code</button>
+                                <button type="submit" style="background: rgba(255, 255, 255, 0.2); color: white; padding: 0.6rem 1.2rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.3); font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255, 255, 255, 0.3)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)';">🔄 Ģenerēt jaunu kodu</button>
                             </form>
                         </div>
                     </div>
-                    <div id="subject-edit" style="display: none;" class="subject-edit">
-                        <form method="POST" action="{{ route('teacher.setSubject') }}" class="subject-form">
+                    <div id="subject-edit" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2);">
+                        <form method="POST" action="{{ route('teacher.setSubject') }}" style="display: flex; gap: 1rem; align-items: flex-end;">
                             @csrf
-                            <input type="text" name="subject_name" value="{{ $subject->name }}" required class="form-input">
-                            <button type="submit" class="btn btn-primary">Update Subject</button>
+                            <div style="flex: 1;">
+                                <label style="color: #BBE1FA; display: block; margin-bottom: 0.5rem; font-weight: 600;">Jauns kursa nosaukums</label>
+                                <input type="text" name="subject_name" value="{{ $subject->name }}" required style="width: 100%; padding: 0.8rem 1rem; border: 2px solid #BBE1FA; border-radius: 8px; color: #1B262C;">
+                            </div>
+                            <button type="submit" style="background: #BBE1FA; color: #0F4C75; padding: 0.8rem 1.5rem; border-radius: 8px; border: none; font-weight: 700; cursor: pointer;">Atjaunināt</button>
                         </form>
                     </div>
-            </div>
-        @endif
+                </div>
+            @endif
 
-        <!-- Messages -->
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+            <!-- Messages -->
+            @if ($errors->any())
+                <div style="background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); border-left: 4px solid #f44336; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; color: #c62828;">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        @foreach ($errors->all() as $error)
+                            <li style="margin: 0.5rem 0; font-weight: 600;">{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+            @if (session('success'))
+                <div style="background: linear-gradient(135deg, #e8f5e9 0%, #d4edda 100%); border-left: 4px solid #4caf50; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; color: #2e7d32; font-weight: 600;">
+                    ✅ {{ session('success') }}
+                </div>
+            @endif
 
-        @if ($subject)
+            @if ($subject)
             <!-- Add Assignment Section -->
             <section class="dashboard-section">
                 <div class="section-header">
@@ -213,12 +223,12 @@
     </div>
 
     <style>
+    body { background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f7 100%); }
+    
     .dashboard-wrapper {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 1.5rem;
-        background: #ffffff;
-        color: #1a1a1a;
+        padding: 2rem;
     }
 
     .dashboard-header {
@@ -226,19 +236,21 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 2rem;
-        padding-bottom: 1.5rem;
-        border-bottom: 2px solid #e5e7eb;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(27, 38, 44, 0.1);
     }
 
     .header-left h1 {
         margin: 0;
         font-size: 2rem;
-        color: #0b1220;
+        color: #0F4C75;
     }
 
     .header-subtitle {
-        margin: 0.25rem 0 0;
-        color: #4b5563;
+        margin: 0.5rem 0 0;
+        color: #666;
         font-size: 0.95rem;
     }
 
@@ -249,59 +261,69 @@
 
     /* Subject Card */
     .subject-card {
-        background: linear-gradient(135deg, #dbeafe, #e0e7ff);
-        border: 2px solid #3b82f6;
+        background: linear-gradient(135deg, #0F4C75 0%, #3282B8 100%);
+        border: none;
         border-radius: 12px;
-        padding: 1.5rem;
+        padding: 2rem;
         margin-bottom: 2rem;
+        color: white;
+        box-shadow: 0 10px 30px rgba(15, 76, 117, 0.2);
     }
 
     .subject-info h3 {
         margin: 0 0 0.5rem;
-        font-size: 1rem;
-        color: #0b1220;
+        font-size: 0.9rem;
+        color: #BBE1FA;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
     .subject-name {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         font-weight: 700;
-        color: #1e40af;
+        color: white;
         margin: 0 0 1rem;
     }
 
+    .subject-code {
+        color: #BBE1FA;
+        font-size: 0.95rem;
+    }
+
     .subject-edit {
-        margin-top: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid rgba(59,130,246,0.3);
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     /* Alerts */
     .alert {
-        padding: 1rem;
-        border-radius: 8px;
+        padding: 1.5rem;
+        border-radius: 10px;
         margin-bottom: 1.5rem;
+        border-left: 4px solid;
     }
 
     .alert-warning {
-        background: #fef3c7;
-        border: 2px solid #f59e0b;
-        color: #92400e;
+        background: #fff8e1;
+        border-left-color: #FFC107;
+        color: #7D6608;
     }
 
     .alert-danger {
-        background: #fee2e2;
-        border: 2px solid #ef4444;
-        color: #991b1b;
+        background: #ffebee;
+        border-left-color: #f44336;
+        color: #c62828;
     }
 
     .alert-success {
-        background: #d1fae5;
-        border: 2px solid #10b981;
-        color: #065f46;
+        background: #e8f5e9;
+        border-left-color: #4caf50;
+        color: #2e7d32;
     }
 
     .alert h3 {
-        margin: 0 0 0.5rem;
+        margin: 0 0 0.75rem;
     }
 
     .alert ul {
@@ -313,7 +335,7 @@
     .assignment-form,
     .subject-form {
         display: grid;
-        gap: 1rem;
+        gap: 1.25rem;
     }
 
     .form-group {
@@ -322,148 +344,152 @@
     }
 
     .form-group label {
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.5rem;
         font-weight: 600;
-        color: #374151;
-        font-size: 0.9rem;
+        color: #1B262C;
+        font-size: 0.95rem;
     }
 
     .form-input {
-        padding: 0.75rem;
-        border: 2px solid #d1d5db;
+        padding: 0.875rem;
+        border: 2px solid #E0E7FF;
         border-radius: 8px;
         font-size: 1rem;
-        color: #1a1a1a;
-        background: #ffffff;
+        color: #1B262C;
+        background: white;
+        transition: all 0.3s ease;
     }
 
     .form-input:focus {
         outline: none;
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        border-color: #0F4C75;
+        box-shadow: 0 0 0 4px rgba(15, 76, 117, 0.1);
+        background: white;
     }
 
     .form-input::placeholder {
-        color: #9ca3af;
+        color: #999;
     }
 
     .error {
-        color: #dc2626;
+        color: #d32f2f;
         font-size: 0.85rem;
-        margin-top: 0.25rem;
+        margin-top: 0.35rem;
     }
 
     /* Buttons */
     .btn {
-        padding: 0.6rem 1rem;
+        padding: 0.75rem 1.5rem;
         border: none;
         border-radius: 8px;
         cursor: pointer;
         font-weight: 600;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
         text-decoration: none;
         display: inline-block;
     }
 
     .btn-primary {
-        background: linear-gradient(90deg, #3b82f6, #06b6d4);
-        color: #fff;
+        background: linear-gradient(135deg, #0F4C75 0%, #3282B8 100%);
+        color: white;
     }
 
     .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+        box-shadow: 0 8px 16px rgba(15, 76, 117, 0.3);
     }
 
     .btn-secondary {
-        background: #e5e7eb;
-        color: #1a1a1a;
-        border: 2px solid #d1d5db;
+        background: white;
+        color: #0F4C75;
+        border: 2px solid #0F4C75;
     }
 
     .btn-secondary:hover {
-        background: #d1d5db;
+        background: #F0F4F8;
     }
 
     .btn-danger {
-        background: #fee2e2;
-        color: #991b1b;
-        border: 2px solid #fecaca;
+        background: #ffcdd2;
+        color: #c62828;
+        border: none;
     }
 
     .btn-danger:hover {
-        background: #fecaca;
+        background: #ef9a9a;
     }
 
     .btn-small {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.8rem;
-        background: #3b82f6;
-        color: #fff;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        background: #3282B8;
+        color: white;
     }
 
     .btn-small:hover {
         transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(59,130,246,0.2);
+        box-shadow: 0 4px 12px rgba(50, 130, 184, 0.3);
     }
 
     .btn-grade {
-        background: #10b981;
+        background: #4caf50;
     }
 
     .btn-grade:hover {
-        background: #059669;
+        background: #45a049;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
     }
 
     /* Tables */
     .assignments-table table {
         width: 100%;
         border-collapse: collapse;
-        background: #ffffff;
-        border: 2px solid #e5e7eb;
-        border-radius: 8px;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(27, 38, 44, 0.1);
     }
 
     .assignments-table thead {
-        background: #3b82f6;
+        background: linear-gradient(135deg, #0F4C75 0%, #3282B8 100%);
     }
 
     .assignments-table th {
-        padding: 1rem;
+        padding: 1.25rem;
         text-align: left;
-        color: #ffffff;
+        color: white;
         font-weight: 600;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
 
     .assignments-table td {
-        padding: 1rem;
-        color: #1a1a1a;
-        border-top: 1px solid #e5e7eb;
+        padding: 1.25rem;
+        color: #1B262C;
+        border-top: 1px solid #f0f0f0;
     }
 
     .assignments-table tr:hover {
-        background: #f9fafb;
+        background: #f8f9fa;
     }
 
     .assignment-desc {
-        margin: 0.25rem 0 0;
-        color: #6b7280;
+        margin: 0.5rem 0 0;
+        color: #666;
         font-size: 0.85rem;
     }
 
     .due-date {
-        font-weight: 500;
-        color: #0b1220;
+        font-weight: 600;
+        color: #0F4C75;
     }
 
     .submission-count {
-        background: #dbeafe;
-        color: #1e40af;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
+        background: linear-gradient(135deg, #BBE1FA 0%, #E0E7FF 100%);
+        color: #0F4C75;
+        padding: 0.4rem 0.75rem;
+        border-radius: 6px;
         font-size: 0.85rem;
         font-weight: 600;
     }
@@ -480,18 +506,19 @@
 
     .empty-state {
         text-align: center;
-        color: #6b7280;
-        padding: 2rem;
+        color: #999;
+        padding: 3rem 1.5rem;
         font-size: 1rem;
     }
 
     /* Section */
     .dashboard-section {
-        background: #f9fafb;
-        border: 2px solid #e5e7eb;
+        background: white;
+        border: none;
         border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(27, 38, 44, 0.1);
     }
 
     .dashboard-section.full-width {
@@ -503,28 +530,30 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f0f0;
     }
 
     .section-header h2 {
         margin: 0;
-        font-size: 1.25rem;
-        color: #0b1220;
+        font-size: 1.5rem;
+        color: #0F4C75;
     }
 
     /* Badges */
     .badge {
         display: inline-block;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.7rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         margin-left: 0.5rem;
     }
 
-    .badge-yellow { background: #fed7aa; color: #92400e; }
-    .badge-red { background: #fee2e2; color: #991b1b; }
+    .badge-yellow { background: #ffd699; color: #8B5E00; }
+    .badge-red { background: #ffcccc; color: #990000; }
 
     /* Modal */
     .modal {
@@ -535,7 +564,7 @@
         top: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.5);
+        background: rgba(0, 0, 0, 0.6);
     }
 
     .modal.active {
@@ -545,10 +574,10 @@
     }
 
     .modal-content {
-        background: #ffffff;
-        padding: 2rem;
+        background: white;
+        padding: 2.5rem;
         border-radius: 12px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        box-shadow: 0 20px 60px rgba(27, 38, 44, 0.15);
         max-width: 500px;
         width: 90%;
         max-height: 90vh;
@@ -557,18 +586,19 @@
 
     .modal-content h2 {
         margin: 0 0 1.5rem;
-        color: #0b1220;
+        color: #0F4C75;
     }
 
     .close {
         float: right;
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         cursor: pointer;
-        color: #6b7280;
+        color: #999;
+        transition: color 0.2s ease;
     }
 
     .close:hover {
-        color: #1a1a1a;
+        color: #1B262C;
     }
 
     /* Responsive */
@@ -583,12 +613,22 @@
         }
 
         .assignments-table {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
         .assignments-table th,
         .assignments-table td {
-            padding: 0.5rem;
+            padding: 0.75rem;
+        }
+
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .header-right {
+            width: 100%;
         }
     }
 
@@ -605,6 +645,14 @@
         .assignment-form,
         .subject-form {
             grid-template-columns: 1fr;
+        }
+
+        .header-left h1 {
+            font-size: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
         }
     }
     </style>
@@ -638,6 +686,10 @@
         document.getElementById('gradeModal').classList.remove('active');
     }
 
+        </div>
+    </div>
+
+    <script>
     function toggleSubjectEdit() {
         const subjectEdit = document.getElementById('subject-edit');
         subjectEdit.style.display = subjectEdit.style.display === 'none' ? 'block' : 'none';

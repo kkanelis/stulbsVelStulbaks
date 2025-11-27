@@ -10,7 +10,7 @@ class AssignmentFile extends Model
     use HasFactory;
 
     protected $fillable = [
-        'assignment_id', 'user_id', 'path', 'original_name', 'mime', 'size'
+        'assignment_id', 'user_id', 'path', 'original_name', 'mime', 'size', 'note'
     ];
 
     public function assignment()
