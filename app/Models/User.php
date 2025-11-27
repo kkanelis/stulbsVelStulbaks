@@ -6,6 +6,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Subject;
+use App\Models\Assignment;
+use App\Models\Grade;
 
 class User extends Authenticatable
 {
@@ -63,5 +66,31 @@ class User extends Authenticatable
     public function isStudent(): bool
     {
         return $this->role === 'student';
+    }
+
+    /**
+     * Relationships for teachers and students
+     */
+    public function subject()
+    {
+        return $this->hasOne(Subject::class, 'teacher_id');
+    }
+
+    public function assignments()
+    {
+        return $this->hasMany(Assignment::class, 'teacher_id');
+    }
+
+    public function grades()
+    {
+        return $this->hasMany(Grade::class, 'student_id');
+    }
+
+    /**
+     * Subjects the user (student) is enrolled in.
+     */
+    public function enrolledSubjects()
+    {
+        return $this->belongsToMany(Subject::class, 'subject_student', 'student_id', 'subject_id');
     }
 }
