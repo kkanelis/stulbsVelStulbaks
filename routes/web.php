@@ -19,7 +19,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Simple role dashboards (protected)
 Route::middleware('auth')->group(function () {
-    Route::get('/admin', function () { return view('dashboards.admin'); })->name('dashboard.admin');
     
     // Teacher only routes
     Route::middleware('teacher')->group(function () {
@@ -27,7 +26,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/teacher/subject', [TeacherController::class, 'setSubject'])->name('teacher.setSubject');
         Route::post('/teacher/subject/regenerate', [TeacherController::class, 'regenerateCode'])->name('teacher.regenerateCode');
         Route::post('/teacher/assignment', [TeacherController::class, 'storeAssignment'])->name('teacher.storeAssignment');
-        Route::put('/teacher/assignment/{assignment}', [TeacherController::class, 'updateAssignment'])->name('teacher.updateAssignment');
+        Route::get('/teacher/assignment/{assignment}', [TeacherController::class, 'updateAssignment'])->name('teacher.updateAssignment');
         Route::delete('/teacher/assignment/{assignment}', [TeacherController::class, 'destroyAssignment'])->name('teacher.destroyAssignment');
         Route::post('/teacher/grade/{assignment}', [TeacherController::class, 'gradeAssignment'])->name('teacher.gradeAssignment');
     });

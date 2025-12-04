@@ -26,10 +26,10 @@ class AssignmentController extends Controller
             abort(403, 'Unauthorized access to this assignment.');
         }
 
-        $files = $assignment->files()->with('user')->get();
-
-        // If teacher: get student submissions and all enrolled students
+        // If teacher: get all files and student list with grades
         if ($isTeacher) {
+            $files = $assignment->files()->with('user')->get();
+
             $students = $subject->students()->with(['grades' => function($q) use ($assignment) {
                 $q->where('assignment_id', $assignment->id);
             }])->get();
@@ -37,7 +37,11 @@ class AssignmentController extends Controller
             return view('assignments.teacher-show', compact('assignment', 'files', 'students', 'subject'));
         }
 
-        return view('assignments.show', compact('assignment', 'files', 'isTeacher'));
+        // For students: only show their own submissions, but also provide teacher files
+        $files = $assignment->files()->where('user_id', $user->id)->with('user')->get();
+        $teacherFiles = $assignment->files()->where('user_id', $assignment->teacher_id)->with('user')->get();
+
+        return view('assignments.show', compact('assignment', 'files', 'isTeacher', 'teacherFiles'));
     }
 
     // Upload a file for the assignment (student submission or teacher resource)

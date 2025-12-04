@@ -104,6 +104,33 @@
                                                 </div>
                                             @endif
                                         @endforeach
+                                        
+                                        {{-- Grade form and feedback (Latvian) --}}
+                                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed #E6EEF9; display: grid; gap: 0.75rem;">
+                                            @if($grade && $grade->feedback)
+                                                <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e6f6ff 100%); padding: 0.9rem; border-radius: 8px; color: #0F4C75;">
+                                                    <strong>Atsauksme no iepriekš:</strong>
+                                                    <p style="margin: 0.5rem 0 0 0;">{{ $grade->feedback }}</p>
+                                                </div>
+                                            @endif
+
+                                            <form method="POST" action="{{ route('teacher.gradeAssignment', $assignment->id) }}" style="display: grid; gap: 0.5rem; grid-template-columns: 1fr auto; align-items: end;">
+                                                @csrf
+                                                <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                                                <div style="display: grid; gap: 0.5rem;">
+                                                    <label style="font-weight:700; color:#1B262C;">Vērtējums (0-100)</label>
+                                                    <input name="grade" type="number" min="0" max="100" step="0.1" value="{{ $grade?->grade ?? '' }}" style="padding:0.6rem; border:2px solid #E0E7FF; border-radius:8px; width:100%;">
+
+                                                    <label style="font-weight:700; color:#1B262C;">Atsauksme</label>
+                                                    <textarea name="feedback" rows="3" style="padding:0.6rem; border:2px solid #E0E7FF; border-radius:8px; width:100%;">{{ $grade?->feedback ?? '' }}</textarea>
+                                                </div>
+
+                                                <div>
+                                                    <button type="submit" style="background: linear-gradient(135deg, #0F4C75 0%, #3282B8 100%); color: white; padding: 0.75rem 1rem; border-radius: 8px; border:none; font-weight:700; cursor:pointer;">Saglabāt vērtējumu</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 @endif
                             </div>

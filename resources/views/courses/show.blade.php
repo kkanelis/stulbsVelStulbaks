@@ -40,11 +40,17 @@
                                             📅 <strong>Termiņš:</strong> {{ optional($assignment->due_date)->format('d.m.Y') ?? 'Nav norādīts' }}
                                         </p>
                                         <div style="margin-top: 0.5rem;">
-                                            @if(optional($assignment->due_date)->isPast())
-                                                <span style="background: #fee2e2; color: #991b1b; padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; display: inline-block;">🔴 Pārraidīts</span>
-                                            @elseif(optional($assignment->due_date)?->diffInDays(now()) <= 1)
-                                                <span style="background: #fef3c7; color: #8B5E00; padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; display: inline-block;">⚠️ Drīz Beigsies</span>
-                                            @else
+                                            @php
+                                                $dueDate = optional($assignment->due_date);
+                                                // signed days remaining: positive = future, negative = past
+                                                $daysRemaining = $dueDate ? now()->startOfDay()->diffInDays($dueDate->startOfDay(), false) : null;
+                                            @endphp
+
+                                            @if($daysRemaining !== null && $daysRemaining < 0)
+                                                <span style="background: #fee2e2; color: #991b1b; padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; display: inline-block;">🔴 Beidzies</span>
+                                            @elseif($daysRemaining !== null && $daysRemaining <= 3)
+                                                <span style="background: #fef3c7; color: #8B5E00; padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; display: inline-block;">⚠️ Drīz beigsies</span>
+                                            @elseif($daysRemaining !== null)
                                                 <span style="background: #dbeafe; color: #0369a1; padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; display: inline-block;">✅ Aktīvs</span>
                                             @endif
                                         </div>

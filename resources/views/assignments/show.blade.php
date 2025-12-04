@@ -29,7 +29,7 @@
                     <p style="margin: 0; color: #0369a1; font-size: 0.95rem; font-weight: 600;">
                         📅 <strong>Termiņš:</strong> {{ optional($assignment->due_date)->format('d.m.Y') ?? 'Nav norādīts' }}
                         @if(optional($assignment->due_date)?->isPast())
-                            <span style="background: #fee2e2; color: #991b1b; padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; margin-left: 0.5rem; display: inline-block;">🔴 Pārraidīts</span>
+                            <span style="background: #fee2e2; color: #991b1b; padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; margin-left: 0.5rem; display: inline-block;">🔴 Beidzies</span>
                         @endif
                     </p>
                 </div>
@@ -37,8 +37,8 @@
 
             <!-- Teacher Resources (for students) -->
             @if(!$isTeacher)
-                @php $teacherFiles = $files->where('user_id', $assignment->teacher_id); @endphp
-                @if($teacherFiles->isNotEmpty())
+                @php $teacherFiles = $teacherFiles ?? $files->where('user_id', $assignment->teacher_id); @endphp
+                @if(isset($teacherFiles) && $teacherFiles->isNotEmpty())
                     <div style="background: linear-gradient(135deg, #0F4C75 0%, #3282B8 100%); color: white; padding: 2rem; border-radius: 16px; margin-bottom: 2rem; box-shadow: 0 12px 36px rgba(15, 76, 117, 0.25); position: relative; overflow: hidden;">
                         <div style="position: absolute; width: 200px; height: 200px; background: rgba(187, 225, 250, 0.1); border-radius: 50%; top: -100px; right: -50px;"></div>
                         <h2 style="margin: 0 0 1.5rem; font-size: 1.5rem; font-weight: 800; position: relative; z-index: 1;">📚 Materiāli no Skolotāja</h2>
@@ -64,7 +64,7 @@
                     @endif
                 </h2>
 
-                @php $studentFiles = $files->where('user_id', '!=', $assignment->teacher_id); @endphp
+                @php $studentFiles = $files; @endphp
                 @if($studentFiles->isEmpty())
                     <div style="text-align: center; padding: 2.5rem 1.5rem; color: #999;">
                         <p style="font-size: 1rem; margin: 0;">

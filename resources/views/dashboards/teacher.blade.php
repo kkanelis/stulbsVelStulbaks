@@ -75,39 +75,39 @@
             @endif
 
             @if ($subject)
-            <!-- Add Assignment Section -->
+            <!-- Pievienot Uzdevumu -->
             <section class="dashboard-section">
                 <div class="section-header">
-                    <h2>Create New Assignment</h2>
+                    <h2>Izveidot jaunu uzdevumu</h2>
                 </div>
                 <form method="POST" action="{{ route('teacher.storeAssignment') }}" class="assignment-form">
                     @csrf
                     <div class="form-group">
-                        <label for="title">Assignment Title *</label>
-                        <input type="text" id="title" name="title" placeholder="e.g., Chapter 5 Exercises" required class="form-input" value="{{ old('title') }}">
+                        <label for="title">Uzdevuma nosaukums *</label>
+                        <input type="text" id="title" name="title" placeholder="Piem.: 5. nodaļas uzdevumi" required class="form-input" value="{{ old('title') }}">
                         @error('title') <span class="error">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="form-group">
-                        <label for="description">Description</label>
-                        <textarea id="description" name="description" placeholder="Detailed assignment instructions..." rows="4" class="form-input">{{ old('description') }}</textarea>
+                        <label for="description">Apraksts</label>
+                        <textarea id="description" name="description" placeholder="Detalizēts uzdevuma apraksts..." rows="4" class="form-input">{{ old('description') }}</textarea>
                         @error('description') <span class="error">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="form-group">
-                        <label for="due_date">Due Date *</label>
+                        <label for="due_date">Termiņš *</label>
                         <input type="datetime-local" id="due_date" name="due_date" required class="form-input" value="{{ old('due_date') }}">
                         @error('due_date') <span class="error">{{ $message }}</span> @enderror
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Create Assignment</button>
+                    <button type="submit" class="btn btn-primary">Izveidot uzdevumu</button>
                 </form>
             </section>
 
-            <!-- Assignments List -->
+            <!-- Uzdevumu saraksts -->
             <section class="dashboard-section full-width">
                 <div class="section-header">
-                    <h2>Your Assignments ({{ count($assignments) }})</h2>
+                    <h2>Jūsu uzdevumi ({{ count($assignments) }})</h2>
                 </div>
 
                 @if (count($assignments) > 0)
@@ -115,44 +115,41 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Title</th>
-                                    <th>Due Date</th>
-                                    <th>Created</th>
-                                    <th>Submissions</th>
-                                    <th>Actions</th>
+                                    <th>Nosaukums</th>
+                                    <th>Termiņš</th>
+                                    <th>Izveidots</th>
+                                    <th>Iesniegumi</th>
+                                    <th>Darbības</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($assignments as $assignment)
+                                    @php
+                                        $daysRemaining = now()->startOfDay()->diffInDays($assignment->due_date->startOfDay(), false);
+                                    @endphp
                                     <tr>
                                         <td>
-                                            <strong>{{ $assignment->title }}</strong>
-                                            @if ($assignment->description)
-                                                <p class="assignment-desc">{{ Str::limit($assignment->description, 50) }}</p>
+                                            <a href="{{ route('assignment.show', $assignment) }}" style="color: inherit; text-decoration: none; display: block;">
+                                                <strong>{{ $assignment->title }}</strong>
+                                                @if ($assignment->description)
+                                                    <p class="assignment-desc">{{ Str::limit($assignment->description, 50) }}</p>
+                                                @endif
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <span class="due-date">{{ $assignment->due_date->format('d.m.Y H:i') }}</span>
+                                            @if ($daysRemaining < 0)
+                                                <span class="badge badge-red">Beidzies</span>
+                                            @elseif ($daysRemaining <= 3)
+                                                <span class="badge badge-yellow">Drīz beigsies</span>
                                             @endif
                                         </td>
+                                        <td>{{ $assignment->created_at->format('d.m.Y') }}</td>
                                         <td>
-                                            <span class="due-date">{{ $assignment->due_date->format('M d, Y H:i') }}</span>
-                                            @if ($assignment->due_date->isPast())
-                                                <span class="badge badge-red">Overdue</span>
-                                            @elseif ($assignment->due_date->diffInDays(now()) <= 1)
-                                                <span class="badge badge-yellow">Due Soon</span>
-                                            @endif
-                                        </td>
-                                        <td>{{ $assignment->created_at->format('M d, Y') }}</td>
-                                        <td>
-                                            <span class="submission-count">{{ count($assignment->grades) }} graded</span>
+                                            <span class="submission-count">{{ count($assignment->grades) }} vērtēts</span>
                                         </td>
                                         <td>
-                                            <div class="action-buttons">
-                                                <button class="btn btn-small" onclick="openEditModal({{ $assignment->id }}, '{{ addslashes($assignment->title) }}', '{{ addslashes($assignment->description) }}', '{{ $assignment->due_date->format('Y-m-d\TH:i') }}')">Edit</button>
-                                                <button class="btn btn-small btn-grade" onclick="openGradeModal({{ $assignment->id }}, '{{ addslashes($assignment->title) }}')">Grade</button>
-                                                <form method="POST" action="{{ route('teacher.destroyAssignment', $assignment) }}" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                                                </form>
-                                            </div>
+                                            <a href="{{ route('assignment.show', $assignment) }}" class="btn btn-small" style="display:inline-block; text-decoration:none;">Apskatīt</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -160,7 +157,7 @@
                         </table>
                     </div>
                 @else
-                    <p class="empty-state">No assignments yet. Create your first assignment above!</p>
+                    <p class="empty-state">Nav vēl uzdevumu. Izveidojiet savu pirmo uzdevumu augstāk!</p>
                 @endif
             </section>
         @endif
@@ -170,24 +167,24 @@
     <div id="editModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeEditModal()">&times;</span>
-            <h2>Edit Assignment</h2>
+            <h2>Rediģēt uzdevumu</h2>
             <form id="editForm" method="POST" style="display:none;">
                 @csrf
                 @method('PUT')
                 <div class="form-group">
-                    <label for="edit-title">Title</label>
+                    <label for="edit-title">Nosaukums</label>
                     <input type="text" id="edit-title" name="title" required class="form-input">
                 </div>
                 <div class="form-group">
-                    <label for="edit-description">Description</label>
+                    <label for="edit-description">Apraksts</label>
                     <textarea id="edit-description" name="description" rows="4" class="form-input"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="edit-due-date">Due Date</label>
+                    <label for="edit-due-date">Termiņš</label>
                     <input type="datetime-local" id="edit-due-date" name="due_date" required class="form-input">
                 </div>
-                <button type="submit" class="btn btn-primary">Update Assignment</button>
-                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Atjaunināt uzdevumu</button>
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Atcelt</button>
             </form>
         </div>
     </div>
@@ -196,28 +193,28 @@
     <div id="gradeModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeGradeModal()">&times;</span>
-            <h2>Grade Assignment: <span id="gradingTitle"></span></h2>
+            <h2>Vērtēt uzdevumu: <span id="gradingTitle"></span></h2>
             <form id="gradeForm" method="POST" style="display:none;">
                 @csrf
                 <div class="form-group">
-                    <label for="student-id">Select Student</label>
+                    <label for="student-id">Izvēlieties studentu</label>
                     <select id="student-id" name="student_id" required class="form-input">
-                        <option value="">-- Select a student --</option>
+                        <option value="">-- Izvēlieties studentu --</option>
                         @foreach (App\Models\User::where('role', 'student')->get() as $student)
                             <option value="{{ $student->id }}">{{ $student->name }} ({{ $student->email }})</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="grade">Grade (0-100) *</label>
+                    <label for="grade">Vērtējums (0-100) *</label>
                     <input type="number" id="grade" name="grade" min="0" max="100" step="0.5" required class="form-input" placeholder="85">
                 </div>
                 <div class="form-group">
-                    <label for="feedback">Feedback</label>
-                    <textarea id="feedback" name="feedback" rows="4" class="form-input" placeholder="Provide feedback for the student..."></textarea>
+                    <label for="feedback">Atsauksme</label>
+                    <textarea id="feedback" name="feedback" rows="4" class="form-input" placeholder="Ierakstiet atsauksmi studentam..."></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Save Grade</button>
-                <button type="button" class="btn btn-secondary" onclick="closeGradeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Saglabāt vērtējumu</button>
+                <button type="button" class="btn btn-secondary" onclick="closeGradeModal()">Atcelt</button>
             </form>
         </div>
     </div>
@@ -670,29 +667,29 @@
     }
 
     function closeEditModal() {
-        document.getElementById('editModal').classList.remove('active');
+        const modal = document.getElementById('editModal');
+        if (modal) modal.classList.remove('active');
     }
 
     function openGradeModal(id, title) {
         const modal = document.getElementById('gradeModal');
         const form = document.getElementById('gradeForm');
         form.action = '/teacher/grade/' + id;
-        document.getElementById('gradingTitle').textContent = title;
+        const gradingTitle = document.getElementById('gradingTitle');
+        if (gradingTitle) gradingTitle.textContent = title;
         form.style.display = 'block';
         modal.classList.add('active');
     }
 
     function closeGradeModal() {
-        document.getElementById('gradeModal').classList.remove('active');
+        const modal = document.getElementById('gradeModal');
+        if (modal) modal.classList.remove('active');
     }
 
-        </div>
-    </div>
-
-    <script>
     function toggleSubjectEdit() {
         const subjectEdit = document.getElementById('subject-edit');
-        subjectEdit.style.display = subjectEdit.style.display === 'none' ? 'block' : 'none';
+        if (!subjectEdit) return;
+        subjectEdit.style.display = subjectEdit.style.display === 'none' || subjectEdit.style.display === '' ? 'block' : 'none';
     }
 
     // Close modal when clicking outside
